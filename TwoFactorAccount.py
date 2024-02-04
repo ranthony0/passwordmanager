@@ -1,10 +1,24 @@
 from Account import Account
 
 class TwoFactorAccount(Account):
-    def account_ok(self, account_list, exception_term):
-        if account_list <3:
-            return True
-        elif exception_term and account_list == 3:
-            return True
-        else:
-            return False
+    __website_name = ""
+    __login_url = ""
+    __user_name = ""
+    __password = ""
+    __last_password_update = ""
+    __type = ""
+    __info = ""
+    def __init__(self, website_name, login_url, user_name, password, last_password_update, type, info):
+        super().__init__(website_name, login_url, user_name, password, last_password_update)
+        self.__type = type
+        self.__info = info
+
+    def get_type(self):
+        return self.__type
+
+    def get_info(self):
+        return self.__info
+
+
+    def __str__(self):
+        return super().__str__() + f" {self.__type}:{self.__info}"

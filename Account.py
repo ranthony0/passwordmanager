@@ -11,9 +11,21 @@ class Account:
         self.__user_name = user_name
         self.__password = password
         self.__last_password_update = last_password_update
+    def get_website_name(self):
+        return self.__website_name
+
+    def get_login_url(self):
+        return self.__login_url
+
+    def get_user_name(self):
+        return self.__user_name
+
+    def get_password(self):
+        return self.__password
+
+    def get_last_password_update(self):
+        return self.__last_password_update
 
     def __str__(self):
         return F"Account: {self.__website_name}, {self.__user_name}"
 
-    def account_ok(self, account_list):
-        raise Exception("account_ok is abstract!")
