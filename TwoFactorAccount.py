@@ -8,6 +8,7 @@ class TwoFactorAccount(Account):
     __last_password_update = ""
     __type = ""
     __info = ""
+
     def __init__(self, website_name, login_url, user_name, password, last_password_update, type, info):
         super().__init__(website_name, login_url, user_name, password, last_password_update)
         self.__type = type
@@ -18,7 +19,6 @@ class TwoFactorAccount(Account):
 
     def get_info(self):
         return self.__info
-
 
     def __str__(self):
         return super().__str__() + f" {self.__type}:{self.__info}"

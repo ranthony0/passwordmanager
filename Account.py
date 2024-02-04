@@ -27,5 +27,5 @@ class Account:
         return self.__last_password_update
 
     def __str__(self):
-        return F"Account: {self.__website_name}, {self.__user_name}"
+        return self().__str__() + F"Account: {self.__website_name}, {self.__login_url}, {self.__user_name}, {self.__password}, {self.__last_password_update}"
 

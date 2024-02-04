@@ -6,6 +6,7 @@ from AccountList import AccountList
 class PasswordManagerUI:
     __account_lists = None
 
+
     def __init__(self):
         pass
 
@@ -17,6 +18,8 @@ class PasswordManagerUI:
         print()
         print("Choose an action:")
         print("   i: Print the list of accounts")
+        print("   o: Print the Accounts")
+        print("   s: Add account")
         print("   a: Add a new account list")
         print("   d: Delete an account list")
         print("   x: Exit the program")
@@ -26,6 +29,12 @@ class PasswordManagerUI:
         print("Account Lists:")
         for account_list in cls.__account_lists:
             print("    ", account_list.get_name())
+
+    @classmethod
+    def print_accounts(cls):
+        print("Accounts")
+        for account in cls.__account:
+            print("    ", account.get_website_name())
 
     @classmethod
     def lookup_account_list(cls, name):
@@ -63,12 +72,16 @@ class PasswordManagerUI:
     def run(cls):
         while True:
             cls.print_menu()
-            choice = select_item("Select", choices=["i", "x", "a", "d"])
+            choice = select_item("Select", choices=["i", "o", "x", "a", "d", "s"])
             if choice == "x":
                 print("Goodbye!")
                 break
             elif choice == "i":
                 cls.print_lists()
+            elif choice == "o":
+                cls.print_accounts()
+            elif choice == "s":
+                cls.add_account()
             elif choice == "a":
                 cls.add_account_list()
             elif choice == "d":
