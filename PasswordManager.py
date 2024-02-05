@@ -3,9 +3,9 @@ from Account import Account
 from TwoFactorAccount import TwoFactorAccount
 from AccountList import AccountList
 
+
 class PasswordManagerUI:
     __account_lists = None
-
 
     def __init__(self):
         pass
@@ -13,13 +13,12 @@ class PasswordManagerUI:
     @classmethod
     def init(cls):
         cls.__account_lists = AccountList.get_account_lists()
+
     @staticmethod
     def print_menu():
         print()
         print("Choose an action:")
         print("   i: Print the list of accounts")
-        print("   o: Print the Accounts")
-        print("   s: Add account")
         print("   a: Add a new account list")
         print("   d: Delete an account list")
         print("   x: Exit the program")
@@ -31,17 +30,12 @@ class PasswordManagerUI:
             print("    ", account_list.get_name())
 
     @classmethod
-    def print_accounts(cls):
-        print("Accounts")
-        for account in cls.__account:
-            print("    ", account.get_website_name())
-
-    @classmethod
     def lookup_account_list(cls, name):
         for account_list in cls.__account_lists:
             if name.lower() == account_list.get_name().lower():
                 return account_list
         return None
+
     @classmethod
     def add_account_list(cls):
         name = input_string(prompt="What is the name of the account list: ")
@@ -63,7 +57,8 @@ class PasswordManagerUI:
 
     @classmethod
     def delete_account_list(cls):
-        name = select_item("PLease select an account list: ", choices=[al.get_name() for al in PasswordManagerUI.__account_lists])
+        name = select_item("PLease select an account list: ",
+                           choices=[al.get_name() for al in PasswordManagerUI.__account_lists])
         for al in cls.__account_lists:
             if al.get_name() == name:
                 cls.__account_lists.remove(al)
@@ -72,24 +67,24 @@ class PasswordManagerUI:
     def run(cls):
         while True:
             cls.print_menu()
-            choice = select_item("Select", choices=["i", "o", "x", "a", "d", "s"])
+            choice = select_item("Select", choices=["i", "x", "d", "a"])
             if choice == "x":
                 print("Goodbye!")
                 break
             elif choice == "i":
                 cls.print_lists()
-            elif choice == "o":
-                cls.print_accounts()
-            elif choice == "s":
-                cls.add_account()
             elif choice == "a":
                 cls.add_account_list()
             elif choice == "d":
                 cls.delete_account_list()
 
+    def run(self):
+        al1 = AccountList("TwoFactorAuthentication")
+        al1.add(TwoFactorAccount)
+        print(al1)
+        al1.print_accounts()
+
 
 if __name__ == "__main__":
     PasswordManagerUI.init()
     PasswordManagerUI.run()
-
-
