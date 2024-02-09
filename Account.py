@@ -32,3 +32,12 @@ class Account:
 
     def __repr__(self):
         return self().__str__() + F"Account: {self.__website_name}, {self.__login_url}, {self.__user_name}, {self.__password}, {self.__last_password_update}"
+
+    def get_website_name(self):
+        return self.__website_name
+
+    def get_login_url(self):
+        return self.__login_url
+
+    def set_website_name(self, website_name):
+        self.__website_name = website_name
