@@ -28,10 +28,10 @@ class Account:
         return self.__last_password_update
 
     def __str__(self):
-        return self().__str__() + F"Account: {self.__website_name}, {self.__login_url}, {self.__user_name}, {self.__password}, {self.__last_password_update}"
+        return F"Account: {self.__website_name}, {self.__login_url}, {self.__user_name}, {self.__password}, {self.__last_password_update}"
 
     def __repr__(self):
-        return self().__str__() + F"Account: {self.__website_name}, {self.__login_url}, {self.__user_name}, {self.__password}, {self.__last_password_update}"
+        return self.__str__()
 
     def get_website_name(self):
         return self.__website_name

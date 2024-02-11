@@ -1,10 +1,14 @@
+from Account import Account
+from TwoFactorAccount import TwoFactorAccount
+
 class AccountList:
     __name = ""
     __accounts = []
+    ALL_ACCOUNTS_NAME = "All accounts"
 
     def __init__(self, name, accounts):
         self.__name = name
-        self.__accounts = []
+        self.__accounts = accounts
 
     def __iter__(self):
         return iter(self.__accounts)
@@ -42,15 +46,22 @@ class AccountList:
 
     def get_name(self):
         return self.__name
-    @staticmethod
-    def get_account_lists():
-        return [
-            AccountList("Entertainment", []),
+
+    @classmethod
+    def get_account_lists(cls):
+        hbo = Account("HBO", "hbomax.com", "ant", "xxx", "x")
+        netflix = TwoFactorAccount("Netflix", "Netflix.com", "ant", "xxx", "x", "pin", "1234")
+        pcc = TwoFactorAccount("pcc", "mypcc.edu", "ant.ros", "xxx", "x", "phone", "ms authenticator")
+
+        all_accounts = AccountList(cls.ALL_ACCOUNTS_NAME, [hbo, netflix, pcc])
+
+        return all_accounts, [
+            AccountList("Entertainment", [hbo, netflix]),
             AccountList("Work", []),
-            AccountList("School", []),
+            AccountList("School", [pcc]),
             AccountList("finance", []),
             AccountList("games", []),
-            AccountList("All accounts", [])
+            all_accounts
         ]
 
 
