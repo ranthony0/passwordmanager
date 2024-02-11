@@ -110,13 +110,31 @@ class PasswordManagerUI:
             account.set_website_name(website_name)
 
     @classmethod
-    def join_lists(cls):
-        list1 = select_item("PLease select an account list: ", "Must be the name of an account list",
-                           choices=[al.get_name() for al in cls.__account_lists] + ["skip"])
-        if list1 != "skip":
+    def select_account_list(cls):
+        name = select_item("PLease select an account list: ", "Must be the name of an account list",
+                            choices=[al.get_name() for al in cls.__account_lists] + ["skip"])
+        if name != "skip":
             for al in cls.__account_lists:
                 if al.get_name() == name:
-                    pass
+                    return al
+            return None
+        else:
+            return None
+
+    @classmethod
+    def join_lists(cls):
+        list1 = PasswordManagerUI.select_account_list()
+        if list1 is not None:
+            list2 = PasswordManagerUI.select_account_list()
+            if list2 is not None:
+                new_list = list1 + list2
+                PasswordManagerUI.__account_lists.append(new_list)
+        #list1 = select_item("PLease select an account list: ", "Must be the name of an account list",
+        #                   choices=[al.get_name() for al in cls.__account_lists] + ["skip"])
+        #if list1 != "skip":
+        #    for al in cls.__account_lists:
+         #       if al.get_name() == name:
+          #          pass
 
     @staticmethod
     def find_account(al):
@@ -137,25 +155,27 @@ class PasswordManagerUI:
 
     @classmethod
     def new_account(cls):
-        name = select_item("PLease select an account list: ", "Must be the name of an account list",
-                           choices=[al.get_name() for al in PasswordManagerUI.__account_lists] + ["skip"])
-        if name != "skip":
-            for al in cls.__account_lists:
-                if al.get_name() == name:
-                    account = PasswordManagerUI.make_or_find_account()
-                    if account is not None and account not in al:
-                        al.add(account)
+        al = PasswordManagerUI.select_account_list()
+            #select_item("PLease select an account list: ", "Must be the name of an account list",
+             #              choices=[al.get_name() for al in PasswordManagerUI.__account_lists] + ["skip"]))
+        if al is not None:
+            #for al in cls.__account_lists:
+             #   if al.get_name() == name:
+            account = PasswordManagerUI.make_or_find_account()
+            if account is not None and account not in al:
+                al.add(account)
 
     @classmethod
     def remove_account_from_list(cls):
-        name = select_item("PLease select an account list: ", "Must be the name of an account list",
-                           choices=[al.get_name() for al in PasswordManagerUI.__account_lists] + ["skip"])
-        if name != "skip":
-            for al in cls.__account_lists:
-                if al.get_name() == name:
-                    account = PasswordManagerUI.find_account(al)
-                    if account is not None and account in al:
-                        al.remove(account)
+        al = PasswordManagerUI.select_account_list()
+            #select_item("PLease select an account list: ", "Must be the name of an account list",
+             #              choices=[al.get_name() for al in PasswordManagerUI.__account_lists] + ["skip"]))
+        if al is not None:
+ #           for al in cls.__account_lists:
+  #              if al.get_name() == name:
+            account = PasswordManagerUI.find_account(al)
+            if account is not None and account in al:
+                al.remove(account)
 
 
     @classmethod
@@ -163,7 +183,7 @@ class PasswordManagerUI:
         cls.__all_accounts, cls.__account_lists = AccountList.get_account_lists()
         while True:
             cls.print_menu()
-            choice = select_item("Select: ", choices=["i", "x", "d", "a", "p", "n", "r", "j"])
+            choice = select_item("Select: ", choices=["i", "x", "d", "a", "p", "n", "r", "j", "u"])
             if choice == "x":
                 print("Goodbye!")
                 break
@@ -198,6 +218,7 @@ class PasswordManagerUI:
         for account in Account:
             account.add(Account)
         lists = [all, Account]
+
 
 
 if __name__ == "__main__":
