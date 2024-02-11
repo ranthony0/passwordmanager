@@ -2,6 +2,7 @@ from Validation import *
 from Account import Account
 from TwoFactorAccount import TwoFactorAccount
 from AccountList import AccountList
+from datetime import datetime
 
 
 class PasswordManagerUI:
@@ -106,8 +107,9 @@ class PasswordManagerUI:
     def update_account(cls):
         account = cls.find_account(cls.__all_accounts)
         if account is not None:
-            website_name = input_string("What is the account website name: ", valid=lambda x: True)
-            account.set_website_name(website_name)
+            password = input_string("What is the new account password: ", valid=lambda x: True)
+            account.set_password(password)
+            account.set_last_password_update(str(datetime.now()))
 
     @classmethod
     def select_account_list(cls):
@@ -128,7 +130,8 @@ class PasswordManagerUI:
             list2 = PasswordManagerUI.select_account_list()
             if list2 is not None:
                 new_list = list1 + list2
-                PasswordManagerUI.__account_lists.append(new_list)
+                if new_list is not None:
+                    PasswordManagerUI.__account_lists.append(new_list)
         #list1 = select_item("PLease select an account list: ", "Must be the name of an account list",
         #                   choices=[al.get_name() for al in cls.__account_lists] + ["skip"])
         #if list1 != "skip":
@@ -200,7 +203,7 @@ class PasswordManagerUI:
             elif choice == "r":
                 cls.remove_account_from_list()
             elif choice == "u":
-                cls.update_account
+                cls.update_account()
             elif choice == "j":
                 cls.join_lists()
 

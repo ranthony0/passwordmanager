@@ -41,3 +41,9 @@ class Account:
 
     def set_website_name(self, website_name):
         self.__website_name = website_name
+
+    def set_password(self, password):
+        self.__password = password
+
+    def set_last_password_update(self, last_password_update):
+        self.__last_password_update = last_password_update

@@ -4,11 +4,13 @@ from TwoFactorAccount import TwoFactorAccount
 class AccountList:
     __name = ""
     __accounts = []
+    __map = {}
     ALL_ACCOUNTS_NAME = "All accounts"
 
     def __init__(self, name, accounts):
         self.__name = name
         self.__accounts = accounts
+        self.__class__.__map[name.lower()] = self
 
     def __iter__(self):
         return iter(self.__accounts)
@@ -26,7 +28,14 @@ class AccountList:
         self.__accounts.append(account)
 
     def __add__(self, other):
-        new_list = AccountList(self.get_name() + "/" + other.get_name())
+        name = self.get_name() + "/" + other.get_name()
+        try:
+            account_list = self.__class__.lookup(name)
+            print(F"Account list {account_list.get_name()} already exists.")
+            return None
+        except KeyError:
+            pass
+        new_list = AccountList(name, [])
         for account in self:
             if account not in new_list:
                 new_list.add(account)
@@ -64,5 +73,7 @@ class AccountList:
             all_accounts
         ]
 
-
+    @classmethod
+    def lookup(cls, name):
+        return cls.__map[name.lower()]
 
