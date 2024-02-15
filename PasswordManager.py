@@ -132,12 +132,6 @@ class PasswordManagerUI:
                 new_list = list1 + list2
                 if new_list is not None:
                     PasswordManagerUI.__account_lists.append(new_list)
-        #list1 = select_item("PLease select an account list: ", "Must be the name of an account list",
-        #                   choices=[al.get_name() for al in cls.__account_lists] + ["skip"])
-        #if list1 != "skip":
-        #    for al in cls.__account_lists:
-         #       if al.get_name() == name:
-          #          pass
 
     @staticmethod
     def find_account(al):
@@ -159,11 +153,7 @@ class PasswordManagerUI:
     @classmethod
     def new_account(cls):
         al = PasswordManagerUI.select_account_list()
-            #select_item("PLease select an account list: ", "Must be the name of an account list",
-             #              choices=[al.get_name() for al in PasswordManagerUI.__account_lists] + ["skip"]))
         if al is not None:
-            #for al in cls.__account_lists:
-             #   if al.get_name() == name:
             account = PasswordManagerUI.make_or_find_account()
             if account is not None and account not in al:
                 al.add(account)
@@ -171,11 +161,7 @@ class PasswordManagerUI:
     @classmethod
     def remove_account_from_list(cls):
         al = PasswordManagerUI.select_account_list()
-            #select_item("PLease select an account list: ", "Must be the name of an account list",
-             #              choices=[al.get_name() for al in PasswordManagerUI.__account_lists] + ["skip"]))
         if al is not None:
- #           for al in cls.__account_lists:
-  #              if al.get_name() == name:
             account = PasswordManagerUI.find_account(al)
             if account is not None and account in al:
                 al.remove(account)
