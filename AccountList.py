@@ -1,5 +1,6 @@
 from Account import Account
 from TwoFactorAccount import TwoFactorAccount
+from Database import Database
 
 class AccountList:
     __name = ""
@@ -11,6 +12,14 @@ class AccountList:
         self.__name = name
         self.__accounts = accounts
         self.__class__.__map[name.lower()] = self
+
+    def to_dict(self):
+        return {
+            "_id": self.get_key(),
+            "name": self.__name,
+            "accounts": [account.get_key() for account in self.__accounts]
+        }
+
 
     def __iter__(self):
         return iter(self.__accounts)
@@ -56,20 +65,32 @@ class AccountList:
     def get_name(self):
         return self.__name
 
+    def get_key(self):
+        return self.__name.lower()
+
+    def to_dict(self):
+        return {
+            "name": self.get_name(),
+            "accounts": [account.get_key() for account in self.__accounts]
+        }
+
     @classmethod
     def get_account_lists(cls):
         hbo = Account("HBO", "hbomax.com", "ant", "xxx", "x")
         netflix = TwoFactorAccount("Netflix", "Netflix.com", "ant", "xxx", "x", "pin", "1234")
         pcc = TwoFactorAccount("pcc", "mypcc.edu", "ant.ros", "xxx", "x", "phone", "ms authenticator")
+        ubif = Account("ubif", "ubif.com", "anthonyrosales", "xxx", "x")
+        boa = TwoFactorAccount("BOA", "boa.com", "ant", "xxx", "x", "pin", "1234")
+        wow = Account("WOW", "wow.com", "zet", "xxx", "x")
 
-        all_accounts = AccountList(cls.ALL_ACCOUNTS_NAME, [hbo, netflix, pcc])
+        all_accounts = AccountList(cls.ALL_ACCOUNTS_NAME, [hbo, netflix, pcc, ubif, boa, wow])
 
         return all_accounts, [
             AccountList("Entertainment", [hbo, netflix]),
-            AccountList("Work", []),
+            AccountList("Work", [ubif]),
             AccountList("School", [pcc]),
-            AccountList("finance", []),
-            AccountList("games", []),
+            AccountList("finance", [boa]),
+            AccountList("games", [wow]),
             all_accounts
         ]
 
@@ -77,3 +98,14 @@ class AccountList:
     def lookup(cls, name):
         return cls.__map[name.lower()]
 
+    @classmethod
+    def read_data(cls):
+        return Database.read_data()
+
+    @staticmethod
+    def add_to_database(account_list):
+        Database.add_account_list_to_database(account_list)
+
+    def delete(self):
+        from Database import Database
+        Database.delete_account_list(self)

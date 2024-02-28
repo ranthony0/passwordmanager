@@ -6,14 +6,15 @@ from datetime import datetime
 
 
 class PasswordManagerUI:
-    __account_lists = None
+    __all_accounts = None
+    __all_account_lists = None
 
     def __init__(self):
         pass
 
     @classmethod
     def init(cls):
-        cls.__account_lists = AccountList.get_account_lists()
+        cls.__all_accounts, cls.__all_account_lists = AccountList.read_data()
 
     @staticmethod
     def print_menu():
@@ -32,12 +33,12 @@ class PasswordManagerUI:
     @classmethod
     def print_lists(cls):
         print("Account Lists:")
-        for account_list in cls.__account_lists:
+        for account_list in cls.__all_account_lists:
             print("    ", account_list.get_name())
 
     @classmethod
     def lookup_account_list(cls, name):
-        for account_list in cls.__account_lists:
+        for account_list in cls.__all_account_lists:
             if name.lower() == account_list.get_name().lower():
                 return account_list
         return None
@@ -45,12 +46,17 @@ class PasswordManagerUI:
     @classmethod
     def add_account_list(cls):
         name = input_string(prompt="What is the name of the account list: ")
-        account_list = cls.lookup_account_list(name)
-        if account_list is not None:
-            print("Error, already exists")
-            return
+        try:
+            account_list = AccountList.lookup(name)
+            if account_list is not None:
+                print("Account list already exists")
+                return
+        except KeyError:
+            pass
         account_list = AccountList(name, [])
-        cls.__account_lists.append(account_list)
+        AccountList.add_to_database(account_list)
+        PasswordManagerUI.__all_account_lists.append(account_list)
+
 
     @classmethod
     def add_account(cls):
@@ -64,18 +70,20 @@ class PasswordManagerUI:
     @classmethod
     def delete_account_list(cls):
         name = select_item("PLease select an account list: ", "Must be the name of an account list",
-                           choices=[al.get_name() for al in PasswordManagerUI.__account_lists] + ["skip"])
+                           choices=[al.get_name() for al in PasswordManagerUI.__all_account_lists] + ["skip"])
         if name != "skip":
-            for al in cls.__account_lists:
+            for al in cls.__all_account_lists:
                 if al.get_name() == name:
-                    cls.__account_lists.remove(al)
+                    al.delete()
+                    cls.__all_account_lists.remove(al)
+
 
     @classmethod
     def print_list(cls):
         name = select_item("PLease select an account list: ", "Must be the name of an account list",
-                           choices=[al.get_name() for al in PasswordManagerUI.__account_lists] + ["skip"])
+                           choices=[al.get_name() for al in PasswordManagerUI.__all_account_lists] + ["skip"])
         if name != "skip":
-            for al in cls.__account_lists:
+            for al in cls.__all_account_lists:
                 if al.get_name() == name:
                     PasswordManagerUI.print_account_list(al)
 
@@ -100,6 +108,7 @@ class PasswordManagerUI:
                 account = TwoFactorAccount(website_name, login_url, user_name, password, last_password_update, type, info)
             else:
                 account = Account(website_name, login_url, user_name, password, last_password_update)
+            account.add_to_database()
             cls.__all_accounts.add(account)
             return account
 
@@ -114,9 +123,9 @@ class PasswordManagerUI:
     @classmethod
     def select_account_list(cls):
         name = select_item("PLease select an account list: ", "Must be the name of an account list",
-                            choices=[al.get_name() for al in cls.__account_lists] + ["skip"])
+                           choices=[al.get_name() for al in cls.__all_account_lists] + ["skip"])
         if name != "skip":
-            for al in cls.__account_lists:
+            for al in cls.__all_account_lists:
                 if al.get_name() == name:
                     return al
             return None
@@ -131,22 +140,20 @@ class PasswordManagerUI:
             if list2 is not None:
                 new_list = list1 + list2
                 if new_list is not None:
-                    PasswordManagerUI.__account_lists.append(new_list)
+                    PasswordManagerUI.__all_account_lists.append(new_list)
 
     @staticmethod
     def find_account(al):
         print("Accounts: ")
         for item in al:
-            print(F"    {item.get_website_name()} {item.get_login_url()}")
-
-
+            print(F"    {item.get_website_name()} {item.get_user_name()}".lower())
         account_name = select_item("Please select an account: ", "Must be the name of an account: ",
-                                   choices=[F"{item.get_website_name()} {item.get_login_url()}" for item in al] + ["skip"])
+                                   choices=[F"{item.get_website_name()} {item.get_user_name()}".lower() for item in al] + ["skip"])
         if account_name == "skip":
             return None
         else:
             for account in al:
-                if account_name == F"{account.get_website_name()} {account.get_login_url()}":
+                if account_name == F"{account.get_website_name()} {account.get_user_name()}".lower():
                     return account
             return None
 
@@ -169,7 +176,6 @@ class PasswordManagerUI:
 
     @classmethod
     def run(cls):
-        cls.__all_accounts, cls.__account_lists = AccountList.get_account_lists()
         while True:
             cls.print_menu()
             choice = select_item("Select: ", choices=["i", "x", "d", "a", "p", "n", "r", "j", "u"])
@@ -201,12 +207,14 @@ class PasswordManagerUI:
 
     @classmethod
     def read_account_lists(cls):
-        all = AccountList("All Accounts")
-        cls.__all_accounts = all
+        all_accounts = AccountList("All Accounts")
+        cls.__all_accounts = all_accounts
         account = TwoFactorAccount(website_name, login_url, user_name, password, last_password_update, type, info)
         for account in Account:
             account.add(Account)
-        lists = [all, Account]
+        lists = [all_accounts, Account]
+        return lists
+        #return AccountList.read_account_lists()
 
 
 

@@ -14,6 +14,12 @@ class TwoFactorAccount(Account):
         self.__type = type
         self.__info = info
 
+    def to_dict(self):
+        dict = super().to_dict()
+        dict["type"] = "TwoFactorAccount",
+        dict["2fa_type"] = self.__type,
+        dict["2fa_info"] = self.__info
+
     def get_type(self):
         return self.__type
 
@@ -22,3 +28,5 @@ class TwoFactorAccount(Account):
 
     def __str__(self):
         return super().__str__() + f" {self.__type}:{self.__info}"
+
+
