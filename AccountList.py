@@ -102,10 +102,10 @@ class AccountList:
     def read_data(cls):
         return Database.read_data()
 
-    @staticmethod
-    def add_to_database(account_list):
-        Database.add_account_list_to_database(account_list)
+    def add_to_database(self):
+        Database.add_account_list_to_database(self)
 
     def delete(self):
         from Database import Database
+        del self.__class__.__map[self.get_key()]
         Database.delete_account_list(self)

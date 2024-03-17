@@ -1,13 +1,23 @@
 from pymongo import *
+from configparser import ConfigParser
+import os
+
+
 class Database:
     __client = None
     __accounts = None
     __account_lists = None
     __password_manager = None
+
     @classmethod
     def __connect(cls):
         if cls.__client is None:
-            cls.__client = MongoClient("mongodb+srv://anthonyrosales1:Limitededition1@sandbox.nbaerza.mongodb.net/?retryWrites=true&w=majority")
+            config = ConfigParser()
+            config.read(os.environ["APPDATA"] + "/PasswordManager/PasswordManager.ini")
+            username = config["Database"]["username"]
+            password = config["Database"]["password"]
+            hostname = config["Database"]["hostname"]
+            cls.__client = MongoClient(F"mongodb+srv://{username}:{password}@{hostname}/?retryWrites=true&w=majority")
             cls.__password_manager = cls.__client.PasswordManager
             cls.__accounts = cls.__password_manager.Accounts
             cls.__account_lists = cls.__password_manager.AccountLists
@@ -170,9 +180,13 @@ class Database:
 
     @classmethod
     def add_account_list_to_database(cls, account_list):
-        cls.__account_lists.insert_one(account_list.to_dict())
+        cls.__account_lists.update_one({ "_id": account_list.get_key()}, { "$set": account_list.to_dict() }, upsert=True)
 
     @classmethod
     def add_account_to_database(cls, account):
         cls.__connect()
-        cls.__accounts.insert_one(account.to_dict())
+        cls.__accounts.update_one({ "_id": account.get_key() }, { "$set": account.to_dict() }, upsert=True)
+
+    @classmethod
+    def delete_account_list(cls, account_list):
+        cls.__account_lists.delete_one({"_id": account_list.get_key()})

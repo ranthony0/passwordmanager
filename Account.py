@@ -71,8 +71,6 @@ class Account:
         return F"{self.__website_name} {self.__user_name}".lower()
 
     def add_to_database(self):
-        Database.add_account_to_database()
+        Database.add_account_to_database(self)
 
-    def to_dict(self):
-        print("Error! You can't call the to_dict method on a generic account")
 

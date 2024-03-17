@@ -1,0 +1,12 @@
+{% extends "default.html" %}
+{% block title %}Add New Account List{% endblock %}
+{% block header %}Type the Account List you wish to Add{% endblock %}
+{% block content %}
+<p>Please enter the name of a new Account list in the box below, and then press the add button to continue</p>
+<p>
+    <form method="get" action="add_account_list">
+        <input type="text" name="account_list_name">
+        <button type="submit">Add</button>
+    </form>
+</p>
+{% endblock %}

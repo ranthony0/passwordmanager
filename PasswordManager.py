@@ -141,6 +141,7 @@ class PasswordManagerUI:
                 new_list = list1 + list2
                 if new_list is not None:
                     PasswordManagerUI.__all_account_lists.append(new_list)
+                    new_list.add_to_database()
 
     @staticmethod
     def find_account(al):
@@ -172,6 +173,7 @@ class PasswordManagerUI:
             account = PasswordManagerUI.find_account(al)
             if account is not None and account in al:
                 al.remove(account)
+                al.add_to_database()
 
 
     @classmethod
