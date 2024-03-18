@@ -216,7 +216,7 @@ class PasswordManagerWeb:
 
     def run(self):
         PasswordManagerWeb.__all_accounts, PasswordManagerWeb.__all_account_lists = AccountList.read_data()
-        PasswordManagerWeb.__app.run(port=8000)
+        PasswordManagerWeb.__app.run(port=8443, ssl_context=('cert.pem', 'key.pem'))
 
 
 if __name__ == "__main__":
